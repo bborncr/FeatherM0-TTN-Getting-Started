@@ -16,6 +16,7 @@ The Things Network uses sub channels 8-15. The example sketch demonstrates how t
 * Modify the library directly so that it will work in the US915 band and with our specific radio.
 * In the example sketch, modify the Device EUI, Application EUI and Application Key parameters taken from The Things Network registration.
 * In the example sketch, modify the pin mapping specifically for the Feather M0.
+* In the example sketch, add the lines that select the US915 sub band used by TTN gateways.
 ---
 ### Required hardware modifications for the Feather M0 LoRA
 * Cut 78mm of wire and solder to the pin marked `Ant.`. This is a 1/4 wave dipole for 915MHz.
@@ -69,7 +70,7 @@ The example sketch can be found in the folder `ttn-featherm0-otaa`. This sketch 
 * Also ensure that the Device EUI is in `lsb` order by using the arrow button, the Application EUI should be in `lsb` order and App Key in `msb` order. See image below.
 * Now copy the keys one by one into the configuration. Device EUI copies into `DEVEUI`. Application EUI copies into `APPEUI`. App Key copies into `APPKEY`.
 ![Device Keys](https://github.com/bborncr/FeatherM0-TTN-Getting-Started/blob/master/images/keys.PNG)
-* Modify the `lmic_pinmap`:
+* Modify the `lmic_pinmap` (already done in the example code but good for reference):
 ```
 // Pin mapping Feather M0
 const lmic_pinmap lmic_pins = {
@@ -79,6 +80,24 @@ const lmic_pinmap lmic_pins = {
   .dio = {3, 6, 11},
 };
 ```
+* Use only the US915 sub band channels 8-15 and "relax" the clock (already done in the example code but good for reference):
+```
+LMIC_selectSubBand(1);
+  //Disable FSB1, channels 0-7
+  for (int i = 0; i < 7; i++) {
+    if (i != 10)
+      LMIC_disableChannel(i);
+
+  }
+  //Disable FSB2-8, channels 16-72
+  for (int i = 16; i < 73; i++) {
+    if (i != 10)
+      LMIC_disableChannel(i);
+
+  }
+  LMIC_setClockError(MAX_CLOCK_ERROR * 1 / 100);
+```
+
 #### Upload the Sketch
 * In the Arduino IDE make sure that the board `Feather M0` is selected.
 * After the sketch uploads open the Serial Monitor and ensure that the speed is set to **9600**.

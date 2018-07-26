@@ -1,8 +1,8 @@
-# AnarduinoMiniWireless-TTN-Getting-Started
-A guide to connecting the Anarduino MiniWireless (US915) to The Things Network using OTAA.
+# FeatherM0-TTN-Getting-Started
+A guide to connecting the Adafruit Feather M0 Lora (US915) to The Things Network using OTAA.
 
 ## Intro
-The Anarduino MiniWireless LoRa board consists of an ATMEGA328p microcontroller connected to a HopeRF RFM95 LoRa radio module. This tutorial is for the **US915** band. Other bands will not work using these instructions, the differences are significant.
+The Adafruit Feather M0 LoRa board consists of an ATSAMD21G18 ARM Cortex M0 microcontroller connected to a HopeRF RFM95 LoRa radio module. This tutorial is for the **US915** band. Other bands will not work using these instructions, the differences are significant.
 The IBM LMIC framework is an Arduino port of the LoRaWAN-in-C framework provided by IBM.
 
 The US915 LoRaWAN band is divided into 72 sub channels. Each gateway uses 8 of these sub channels. 
@@ -10,20 +10,20 @@ The Things Network uses sub channels 8-15. The example sketch demonstrates how t
 
 ### Hardware
 * Solder a 78mm length of wire to the antenna pin.
-* Solder 3 jumpers to enable the MiniWireless to function as a LoRaWAN node using LMIC.
+* Solder **2 jumpers** to enable the Feather M0 to function as a LoRaWAN node using LMIC.
 ### Software
 * Install the IBM LMIC framework for Arduino.
 * Modify the library directly so that it will work in the US915 band and with our specific radio.
-* In the config of the example sketch, modify the Device EUI, Application EUI and Application Key parameters taken from The Things Network registration.
-* In the config of the example sketch, modify the pin mapping specifically for the Anarduino.
+* In the example sketch, modify the Device EUI, Application EUI and Application Key parameters taken from The Things Network registration.
+* In the example sketch, modify the pin mapping specifically for the Feather M0.
 ---
-### Required hardware modifications to the Anarduino MiniWireless LoRA
-* Cut 78mm of wire and solder to the pin marked `ANT`. This is a 1/4 wave dipole for 915MHz.
-* Solder jumpers from the Anarduino directly to the RFM95 module. Pin 3 to RST. Pin 7 to DIO2. Pin 8 to DIO1.
-![LMIC Jumpers](https://github.com/bborncr/AnarduinoMiniWireless-TTN-Getting-Started/blob/master/images/rfm95w.png)
+### Required hardware modifications for the Feather M0 LoRA
+* Cut 78mm of wire and solder to the pin marked `Ant.`. This is a 1/4 wave dipole for 915MHz.
+* Solder jumpers as shown in the photo below. Pin 11 to D2. Pin 8 to io1.
+![LMIC Jumpers](https://github.com/bborncr/FeatherM0-TTN-Getting-Started/blob/master/images/FeatherM0Jumpers.png)
 ### Install the IBM LMIC framework for Arduino
 In the Arduino IDE Library Manager select and install **IBM LMIC framework by IBM Version 1.5.0+arduino-2**
-![Library Screenshot](https://github.com/bborncr/AnarduinoMiniWireless-TTN-Getting-Started/blob/master/images/lmic-library.PNG)
+![Library Screenshot](https://github.com/bborncr/FeatherM0-TTN-Getting-Started/blob/master/images/lmic-library.PNG)
 ### Library Modifications
 These modifications must be done directly in the installed library.
 The following files to modifiy will be relative to **Arduino-->libraries-->IBM_LMIC_framework**.
@@ -46,7 +46,7 @@ The only change is the constant from `10E6` to `8E6`
 ```
 ### Example Sketch
 Before the next section please register an account on The Things Network (https://thethingsnetwork.org).
-The example sketch can be found in the folder `ttn-anarduino-otaa`. This sketch is different from the default example sketch and contains changes that are required for the US915 band and TTN.
+The example sketch can be found in the folder `ttn-featherm0-otaa`. This sketch is different from the default example sketch and contains changes that are required for the US915 band and TTN.
 #### Register a new Device in The Things Network
 * In the Console select Applications-->Register Application.
 * Add an Applications ID. In my case `ttn-getting-started`.
@@ -54,38 +54,37 @@ The example sketch can be found in the folder `ttn-anarduino-otaa`. This sketch 
 * Do not change the Application EUI, the system will generate the ID automatically.
 * For the Handler registration choose the region closest to your location. I chose `ttn-handler-us-west`.
 * Click on Add Application to continue.
-![TTN Add Application](https://github.com/bborncr/AnarduinoMiniWireless-TTN-Getting-Started/blob/master/images/addapplication.PNG)
+![TTN Add Application](https://github.com/bborncr/FeatherM0-TTN-Getting-Started/blob/master/images/addapplication.PNG)
 * In the Application Overview select Register Device.
-* Add a Device ID. This is a human readable name that help identify the device. I chose `anarduino-first-node`.
+* Add a Device ID. This is a human readable name that help identify the device. I chose `featherm0-first-node`.
 * Add the Device EUI. In many cases the Device EUI comes pre-installed in the node. However, because we are creating our own node from scratch we need to invent one. The Device EUI needs 8 hexadecimal bytes. I went to https://www.random.org/bytes/ and generated a random EUI by selecting `8` bytes and `Hexadecimal`.
 * The App Key will be generated by the system.
 * The App EUI should already be filled in.
 * Click on Register to continue.
 * After sucessful registration, maintain the Device Overview page open for the next section.
-![TTN Register Device](https://github.com/bborncr/AnarduinoMiniWireless-TTN-Getting-Started/blob/master/images/registerdevice.PNG)
+![TTN Register Device](https://github.com/bborncr/FeatherM0-TTN-Getting-Started/blob/master/images/registerdevice.PNG)
 #### Configuring the example sketch
 * In order to copy the Device EUI, Application EUI and App Key to our sketch we need to modify the format and change the order of some bytes.
 * In the Device Overview click on the `<>` button for each of the keys. The format should change to "C-style". See image below.
 * Also ensure that the Device EUI is in `lsb` order by using the arrow button, the Application EUI should be in `lsb` order and App Key in `msb` order. See image below.
-* Now copy the keys one by one into the configuration. Device EUI copies into DEVEUI. Application EUI copies into APPEUI. App Key copies into APPKEY.
-![Device Keys](https://github.com/bborncr/AnarduinoMiniWireless-TTN-Getting-Started/blob/master/images/keys.PNG)
+* Now copy the keys one by one into the configuration. Device EUI copies into `DEVEUI`. Application EUI copies into `APPEUI`. App Key copies into `APPKEY`.
+![Device Keys](https://github.com/bborncr/FeatherM0-TTN-Getting-Started/blob/master/images/keys.PNG)
 * Modify the `lmic_pinmap`:
 ```
-// Pin mapping Anarduino
+// Pin mapping Feather M0
 const lmic_pinmap lmic_pins = {
-  .nss = 10,
+  .nss = 8,
   .rxtx = LMIC_UNUSED_PIN,
-  .rst = 3,
-  .dio = {2, 8, 7},
+  .rst = 4,
+  .dio = {3, 6, 11},
 };
 ```
 #### Upload the Sketch
-* The default bootloader for the Anarduino is the **DUEMILANOVE**. Make sure the correct Board is selected.
-* If you have a USB-Serial connector that supports 3.3V and 5V modes make sure to select **5V**.
+* In the Arduino IDE make sure that the board `Feather M0` is selected.
 * After the sketch uploads open the Serial Monitor and ensure that the speed is set to **9600**.
 * If everything is correct, the Join process could take several seconds:
-![Serial Monitor Join](https://github.com/bborncr/AnarduinoMiniWireless-TTN-Getting-Started/blob/master/images/serial.PNG)
+![Serial Monitor Join](https://github.com/bborncr/FeatherM0-TTN-Getting-Started/blob/master/images/serial.PNG)
 * The Device Overview on The Things Network console should now show the Status of the last time the node contacted the gateway:
-![Serial Monitor Join](https://github.com/bborncr/AnarduinoMiniWireless-TTN-Getting-Started/blob/master/images/joined.PNG)
+![Serial Monitor Join](https://github.com/bborncr/FeatherM0-TTN-Getting-Started/blob/master/images/joined.PNG)
 * Click on the **Data** tab to see the incoming data. The message "hello world" will be represented in hexadecimal as `68656C6C6F20776F726C64`.
 * Note that the window in the Console does not have historical data.

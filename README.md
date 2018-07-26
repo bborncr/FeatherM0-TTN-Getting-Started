@@ -2,7 +2,7 @@
 A guide to connecting the Adafruit Feather M0 Lora (US915) to The Things Network using OTAA.
 
 ## Intro
-The Adafruit Feather M0 LoRa board consists of an ATSAMD21G18 ARM Cortex M0 microcontroller connected to a HopeRF RFM95 LoRa radio module. This tutorial is for the **US915** band. Other bands will not work using these instructions, the differences are significant.
+The Adafruit Feather M0 LoRa board consists of an ATSAMD21G18 ARM Cortex M0 microcontroller connected to a HopeRF RFM95 LoRa radio module. **This tutorial is for the US915 band. Other bands will not work using these instructions, the differences are significant.**
 The IBM LMIC framework is an Arduino port of the LoRaWAN-in-C framework provided by IBM.
 
 The US915 LoRaWAN band is divided into 72 sub channels. Each gateway uses 8 of these sub channels. 

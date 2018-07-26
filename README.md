@@ -30,8 +30,8 @@ These modifications must be done directly in the installed library.
 The following files to modifiy will be relative to **Arduino-->libraries-->IBM_LMIC_framework**.
 #### Change the SPI Clock Frequency
 * Navigate and edit `src-->hal-->hal.cpp`
-* Locate the line SPISettings and set to the following `static const SPISettings settings(8E6, MSBFIRST, SPI_MODE0);`
-The only change is the constant from `10E6` to `8E6`
+* Locate the line SPISettings and set to the following `static const SPISettings settings(10E6, MSBFIRST, SPI_MODE0);`
+**EDIT: We are finding that for the Feather M0 it is best to leave this as `10E6`.**
 #### Set the frequency band and radio type
 * Navigate and edit `src-->lmic-->config.h`
 * Ensure that the US915 band is selected and the EU868 band is commented out.
